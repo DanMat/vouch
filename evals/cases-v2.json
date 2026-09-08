@@ -1,0 +1,39 @@
+[
+  {"id":"e01","domain":"coin","diff":"easy","cat":"clear-support","claim":"The Athenian tetradrachm has an owl on the reverse.","source":"Athenian tetradrachms show the head of Athena on the obverse and her owl on the reverse.","expect":"supported"},
+  {"id":"e02","domain":"general","diff":"easy","cat":"clear-support","claim":"At sea level, water boils at 100 degrees Celsius.","source":"Water boils at 100 degrees Celsius at sea level.","expect":"supported"},
+  {"id":"e03","domain":"stamp","diff":"easy","cat":"clear-refute","claim":"The Penny Black was issued in 1918.","source":"The Penny Black was the world's first adhesive postage stamp, issued in Britain in 1840.","expect":"refuted"},
+  {"id":"e04","domain":"coin","diff":"easy","cat":"clear-refute","claim":"The Athenian tetradrachm shows a turtle on the reverse.","source":"Athenian tetradrachms show the head of Athena on the obverse and her owl on the reverse.","expect":"refuted"},
+  {"id":"e05","domain":"stamp","diff":"easy","cat":"not-in-source","claim":"The Penny Black was printed by Perkins Bacon.","source":"The Penny Black was the world's first adhesive postage stamp, issued in Britain in 1840.","expect":"cannot_determine"},
+
+  {"id":"h01","domain":"stamp","diff":"hard","cat":"paraphrase-support","claim":"The Penny Black covered letters weighing no more than half an ounce.","source":"The Penny Black paid for the delivery of a prepaid letter of up to half an ounce.","expect":"supported"},
+  {"id":"h02","domain":"general","diff":"hard","cat":"paraphrase-support","claim":"Every member received the report before voting.","source":"Copies of the report were distributed to all members ahead of the vote.","expect":"supported"},
+  {"id":"h03","domain":"coin","diff":"hard","cat":"numeric-paraphrase","claim":"About two dozen examples are known.","source":"The coin survives in roughly 24 known specimens.","expect":"supported"},
+  {"id":"h04","domain":"coin","diff":"hard","cat":"over-specific-vs-vague","claim":"The coin was struck in 1918.","source":"The coin was struck during the 1910s.","expect":"cannot_determine"},
+  {"id":"h05","domain":"coin","diff":"hard","cat":"over-general","claim":"The coin was struck in high-purity silver.","source":"The coin was struck in silver.","expect":"cannot_determine"},
+  {"id":"h06","domain":"stamp","diff":"hard","cat":"partial-support","claim":"The Inverted Jenny is a US airmail error stamp.","source":"The Inverted Jenny is a famous United States error stamp.","expect":"cannot_determine"},
+
+  {"id":"t01","domain":"stamp","diff":"trap","cat":"negation","claim":"The stamp is perforated.","source":"The stamp is not perforated; it was issued completely imperforate.","expect":"refuted"},
+  {"id":"t02","domain":"coin","diff":"trap","cat":"negation","claim":"This coin is known in gold.","source":"No examples of this coin are known in gold; all surviving pieces are silver.","expect":"refuted"},
+  {"id":"t03","domain":"coin","diff":"trap","cat":"role-swap","claim":"The Visigoths were defeated at Rome in 410 AD.","source":"Rome fell to the Visigoths in 410 AD, who sacked the city.","expect":"refuted"},
+  {"id":"t04","domain":"coin","diff":"trap","cat":"lexical-overlap","claim":"Experts confirmed the coin is genuine.","source":"The forgery was so convincing that it fooled expert numismatists for decades.","expect":"cannot_determine"},
+  {"id":"t05","domain":"coin","diff":"trap","cat":"distractor-in-source","claim":"The Corinth coin shows a turtle.","source":"The tray held coins of Athens, Corinth, and Aegina. The Aegina stater shows a turtle; the Corinth stater shows Pegasos.","expect":"refuted"},
+  {"id":"t06","domain":"coin","diff":"trap","cat":"numeric-mismatch","claim":"The shekel weighed about 17 grams.","source":"The shekel is commonly cited at roughly 14 grams of silver.","expect":"refuted"},
+  {"id":"t07","domain":"stamp","diff":"trap","cat":"attribution-swap","claim":"The 1840 date belongs to the Penny Red.","source":"The Penny Black was issued in 1840; the Penny Red replaced it in 1841.","expect":"refuted"},
+  {"id":"t08","domain":"general","diff":"trap","cat":"lexical-overlap","claim":"The bill passed the senate.","source":"The bill passed the house but was rejected by the senate.","expect":"refuted"},
+
+  {"id":"c01","domain":"stamp","diff":"hard","cat":"compound-refute","claim":"The Penny Black was issued in 1840 and stayed in use for decades.","source":"The Penny Black was issued in Britain in 1840 and was replaced the following year by the Penny Red.","expect":"refuted"},
+  {"id":"c02","domain":"coin","diff":"hard","cat":"compound-support","claim":"The coin was minted in Syracuse and depicts Arethusa.","source":"Minted at Syracuse under Dionysius I, the coin bears the nymph Arethusa surrounded by dolphins.","expect":"supported"},
+  {"id":"c03","domain":"coin","diff":"hard","cat":"compound-refute","claim":"The coin was minted in Athens and depicts Arethusa.","source":"Minted at Syracuse under Dionysius I, the coin bears the nymph Arethusa surrounded by dolphins.","expect":"refuted"},
+  {"id":"c04","domain":"coin","diff":"hard","cat":"compound-partial","claim":"The coin was minted in Syracuse and is the rarest Greek coin known.","source":"Minted at Syracuse under Dionysius I, the coin bears the nymph Arethusa.","expect":"cannot_determine"},
+
+  {"id":"s01","domain":"coin","diff":"trap","cat":"subjective","claim":"This is the most beautiful coin ever made.","source":"The reverse of the coin features an eagle with spread wings.","expect":"cannot_determine"},
+  {"id":"s02","domain":"coin","diff":"trap","cat":"subjective","claim":"The design is ugly.","source":"The design is unusually intricate for the period.","expect":"cannot_determine"},
+
+  {"id":"p01","domain":"stamp","diff":"trap","cat":"gum-from-front","claim":"The stamp is never hinged.","source":"From the front the stamp is well centered with bright colour and full perforations.","expect":"cannot_determine"},
+  {"id":"p02","domain":"stamp","diff":"trap","cat":"mark-not-cancel","claim":"The stamp is postally used.","source":"There is a faint mark in the upper left corner of the stamp.","expect":"cannot_determine"},
+  {"id":"p03","domain":"stamp","diff":"hard","cat":"cto-vs-precancel","claim":"A CTO stamp and a precancel are the same thing.","source":"A precancel is cancelled before being affixed to genuine mail, whereas a CTO is cancelled by the postal authority and never enters the mail.","expect":"refuted"},
+
+  {"id":"m01","domain":"general","diff":"hard","cat":"paraphrase-refute","claim":"The study found the drug had no effect.","source":"The study reported a statistically significant reduction in symptoms among patients given the drug.","expect":"refuted"},
+  {"id":"m02","domain":"general","diff":"hard","cat":"not-in-source","claim":"The study was funded by the manufacturer.","source":"The study reported a statistically significant reduction in symptoms among patients given the drug.","expect":"cannot_determine"},
+  {"id":"m03","domain":"coin","diff":"easy","cat":"clear-support","claim":"CTO stamps never carried mail.","source":"CTO stamps are cancelled to order by the postal authority and never actually carried mail.","expect":"supported"}
+]

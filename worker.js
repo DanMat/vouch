@@ -73,8 +73,47 @@ Be conservative. If support is partial, inferred, or requires anything beyond wh
 Reply with ONLY a JSON object, no prose:
 {"status":"supported|refuted|cannot_determine","quote":"exact substring copied from the SOURCE, or empty string","confidence":0.0,"rationale":"one short sentence"}`;
 
-// The primitive: verify one claim against one source string.
-async function verify(env, claim, source, sourceId = 's1') {
+const firstArray = (raw) => {
+  if (Array.isArray(raw)) return raw;
+  const m = String(raw || '').match(/\[[\s\S]*\]/);
+  if (!m) return null;
+  try { return JSON.parse(m[0]); } catch { return null; }
+};
+
+const DECOMPOSE_SYSTEM = `Split the CLAIM into atomic, independently checkable factual sub-claims. Each sub-claim asserts exactly one fact. If the claim is already a single fact, return just it. Drop pure opinion or filler words. Reply with ONLY a JSON array of strings.`;
+
+// Break a compound claim into atomic sub-claims (so "minted in 200 BC in silver"
+// is checked as two facts, not one blurry one). Falls back to the whole claim.
+async function decompose(env, claim) {
+  try {
+    const raw = await runModel(env, [
+      { role: 'system', content: DECOMPOSE_SYSTEM },
+      { role: 'user', content: `CLAIM:\n${claim}` },
+    ]);
+    const arr = firstArray(raw);
+    const atoms = (arr || []).map((s) => norm(s)).filter((s) => s.length > 8).slice(0, 6);
+    return atoms.length ? atoms : [claim];
+  } catch { return [claim]; }
+}
+
+const ADVERSARIAL_SYSTEM = `A prior checker judged the CLAIM as SUPPORTED by the SOURCE, relying on the QUOTE.
+Be a skeptic. Does the source truly entail the FULL claim, with no missing qualifier, no weaker or different meaning, and without needing any outside knowledge?
+Reply with ONLY JSON: {"holds": true|false, "reason": "one short sentence"}.`;
+
+// Second opinion: try to knock down a "supported" verdict. Returns true if it holds.
+async function adversarialHolds(env, claim, source, quote) {
+  try {
+    const raw = await runModel(env, [
+      { role: 'system', content: ADVERSARIAL_SYSTEM },
+      { role: 'user', content: `SOURCE:\n"""\n${source}\n"""\n\nCLAIM:\n${claim}\n\nQUOTE:\n${quote}` },
+    ]);
+    const p = asVerdict(raw);
+    return p.holds !== false; // default to holding unless it clearly says false
+  } catch { return true; }
+}
+
+// The atomic primitive: verify one already-atomic claim against one source string.
+async function verifyAtomic(env, claim, source, sourceId = 's1') {
   const raw = await runModel(env, [
     { role: 'system', content: VERIFY_SYSTEM },
     { role: 'user', content: `SOURCE:\n"""\n${source}\n"""\n\nCLAIM:\n"""\n${claim}\n"""` },
@@ -99,6 +138,49 @@ async function verify(env, claim, source, sourceId = 's1') {
     }
   }
   return { status, anchors, confidence, rationale, ...(note ? { note } : {}) };
+}
+
+// The full check: decompose the claim into atomic facts, verify each (with an
+// adversarial second opinion on any "supported" atom), then aggregate. A compound
+// claim is supported only if every atom is; refuted if any atom is; otherwise it
+// abstains, so a claim that is half-right never passes as supported.
+async function verifyClaim(env, claim, source, sourceId = 's1', opts = {}) {
+  const doDecompose = opts.decompose !== false;
+  const doAdv = opts.adversarial !== false;
+
+  const withAdversarial = async (a, v) => {
+    if (doAdv && v.status === 'supported') {
+      const holds = await adversarialHolds(env, a, source, v.anchors[0]?.quote || '');
+      if (!holds) return { status: 'cannot_determine', anchors: [], confidence: Math.min(v.confidence, 0.45), rationale: v.rationale, note: 'downgraded by adversarial pass' };
+    }
+    return v;
+  };
+
+  // The holistic check on the FULL claim is the floor. Decomposition can catch extra
+  // problems (a hidden refuted or unsourced part) but can never upgrade a claim to
+  // supported, because splitting can drop the very words that falsify it.
+  const whole = await withAdversarial(claim, await verifyAtomic(env, claim, source, sourceId));
+
+  const subs = [];
+  if (doDecompose) {
+    const atoms = await decompose(env, claim);
+    if (atoms.length > 1) { // only if it genuinely split into multiple facts
+      for (const a of atoms) subs.push({ text: a, ...(await withAdversarial(a, await verifyAtomic(env, a, source, sourceId))) });
+    }
+  }
+
+  const anyRefuted = whole.status === 'refuted' || subs.some((s) => s.status === 'refuted');
+  const allSupported = whole.status === 'supported' && subs.every((s) => s.status === 'supported');
+  const status = anyRefuted ? 'refuted' : allSupported ? 'supported' : 'cannot_determine';
+
+  const anchors = [...(whole.anchors || []), ...subs.flatMap((s) => s.anchors || [])];
+  const confidence = Math.min(whole.confidence ?? 0.5, ...subs.map((s) => s.confidence ?? 0.5), 1);
+  const rationale = status === 'supported'
+    ? 'The whole claim and each of its parts are supported by the source.'
+    : status === 'refuted'
+      ? 'Contradicted by the source: ' + ((subs.find((s) => s.status === 'refuted') || whole).rationale || '')
+      : 'Not every part of the claim could be grounded in the source.';
+  return { status, anchors, confidence, rationale, ...(subs.length ? { subclaims: subs } : {}) };
 }
 
 // Split generated prose into candidate factual claims (one per sentence for the PoC).
@@ -131,7 +213,7 @@ async function ground(env, prompt, sources) {
     let best = { status: 'cannot_determine', anchors: [], confidence: 0.3, rationale: 'No source supports this.' };
     for (let i = 0; i < sources.length; i++) {
       const s = sources[i];
-      const v = await verify(env, text, s.text, s.id || 's' + (i + 1));
+      const v = await verifyAtomic(env, text, s.text, s.id || 's' + (i + 1));
       if (v.status === 'supported') { best = v; break; }
       if (v.status === 'refuted') { best = v; break; }
       if (v.confidence > best.confidence) best = v;
@@ -158,8 +240,9 @@ export default {
 
     try {
       if (url.pathname === '/verify' && request.method === 'POST') {
-        const { claim, source } = await request.json();
+        const { claim, source, mode } = await request.json();
         if (!claim || !source) return json({ error: 'send {claim, source}' }, 400);
+        const fast = (mode || url.searchParams.get('mode')) === 'fast';
         if (url.searchParams.get('debug')) {
           const model = env.MODEL || DEFAULT_MODEL;
           let raw, usedModel = model, err = null;
@@ -167,8 +250,8 @@ export default {
           catch (e) { err = String(e).slice(0, 200); usedModel = FALLBACK_MODEL; try { raw = (await env.AI.run(FALLBACK_MODEL, { messages: [{ role: 'system', content: VERIFY_SYSTEM }, { role: 'user', content: `SOURCE:\n${source}\n\nCLAIM:\n${claim}` }], temperature: 0.1, max_tokens: 500 })).response; } catch (e2) { err += ' | fallback: ' + String(e2).slice(0, 120); } }
           return json({ debug: true, model: usedModel, err, raw });
         }
-        const v = await verify(env, String(claim), String(source));
-        return json({ protocol: PROTOCOL_VERSION, claim, ...v });
+        const v = await verifyClaim(env, String(claim), String(source), 's1', fast ? { decompose: false, adversarial: false } : {});
+        return json({ protocol: PROTOCOL_VERSION, claim, mode: fast ? 'fast' : 'strict', ...v });
       }
       if (url.pathname === '/ground' && request.method === 'POST') {
         const { prompt, sources } = await request.json();

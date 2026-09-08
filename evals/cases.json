@@ -1,0 +1,19 @@
+[
+  {"id":"coin-sup-1","domain":"coin","claim":"The Athenian tetradrachm showed an owl on its reverse.","source":"Athenian tetradrachms bore the head of Athena on the obverse and her owl on the reverse.","expect":"supported"},
+  {"id":"stamp-sup-1","domain":"stamp","claim":"The Penny Black was the first adhesive postage stamp.","source":"The 1840 Penny Black was the world's first adhesive postage stamp, issued in Britain.","expect":"supported"},
+  {"id":"stamp-sup-2","domain":"stamp","claim":"Centering grades compare the margins on opposite sides of a stamp.","source":"Stamp centering is graded by comparing the margins on opposite sides; a perfectly centered stamp is called gem or superb.","expect":"supported"},
+  {"id":"stamp-sup-3","domain":"stamp","claim":"CTO stamps never actually carried mail.","source":"CTO (cancelled to order) stamps are cancelled by the postal authority before sale and never actually carried mail.","expect":"supported"},
+  {"id":"stamp-sup-4","domain":"stamp","claim":"The Inverted Jenny is from 1918.","source":"The Inverted Jenny is a 1918 United States 24-cent airmail stamp, famous for its inverted airplane.","expect":"supported"},
+
+  {"id":"coin-ref-1","domain":"coin","claim":"The Athenian tetradrachm showed a turtle on its reverse.","source":"Athenian tetradrachms bore the head of Athena on the obverse and her owl on the reverse.","expect":"refuted"},
+  {"id":"stamp-ref-1","domain":"stamp","claim":"The Penny Black was issued in 1918.","source":"The Penny Black was the world's first adhesive postage stamp, issued in Britain in 1840.","expect":"refuted"},
+  {"id":"stamp-ref-2","domain":"stamp","claim":"On the Inverted Jenny the airplane is printed right-side up.","source":"The Inverted Jenny is famous because the airplane at its center was accidentally printed upside down.","expect":"refuted"},
+  {"id":"stamp-ref-3","domain":"stamp","claim":"A precancel and a CTO are the same thing.","source":"A precancel is cancelled before being affixed to genuine mail, unlike a CTO, which never enters the mail.","expect":"refuted"},
+
+  {"id":"coin-cd-1","domain":"coin","claim":"The Tyre shekel is the coin of the thirty pieces of silver.","source":"Shekels of Tyre were struck in silver at roughly 14 grams, bearing the head of Melqart and an eagle.","expect":"cannot_determine"},
+  {"id":"stamp-cd-1","domain":"stamp","claim":"The Penny Black was designed by Rowland Hill.","source":"The Penny Black was the world's first adhesive postage stamp, issued in Britain in 1840.","expect":"cannot_determine"},
+  {"id":"stamp-cd-2","domain":"stamp","claim":"The stamp is never hinged.","source":"From the front, the stamp is well centered with even margins and bright colour.","expect":"cannot_determine"},
+  {"id":"stamp-cd-3","domain":"stamp","claim":"The stamp is postally used.","source":"There is a faint mark in the upper-left corner of the stamp.","expect":"cannot_determine"},
+  {"id":"coin-cd-2","domain":"coin","claim":"The coin is roughly 14 grams of high-purity silver.","source":"The coin is commonly cited at roughly 14 grams of silver.","expect":"cannot_determine"},
+  {"id":"coin-cd-3","domain":"coin","claim":"This eagle design is the most beautiful in all of numismatics.","source":"The reverse of the coin features an eagle with spread wings.","expect":"cannot_determine"}
+]

@@ -201,7 +201,7 @@ button:disabled{opacity:.6;cursor:progress}
 </style></head><body>
 <h1>Vouch <span style="color:var(--mut);font-weight:400;font-size:1rem">grounding check</span></h1>
 <p class="sub">Does the source actually support the claim? Green = yes, with the exact span. Grey = cannot tell (a first-class answer). Red = the source contradicts it.</p>
-<label>Claim</label><textarea id="claim">The Tyre shekel weighed about 14 grams of high-purity silver.</textarea>
+<label>Claim</label><textarea id="claim">The Tyre shekel was struck in silver at roughly 14 grams.</textarea>
 <label>Source</label><textarea id="source">Shekels of Tyre were struck in silver and are commonly cited at roughly 14 grams. They bear the head of Melqart on the obverse and an eagle on the reverse.</textarea>
 <button id="go">Check</button>
 <div class="out" id="out"></div>

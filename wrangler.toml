@@ -1,0 +1,8 @@
+name = "vouch"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+account_id = "f1908326ae94f833b26702ea371f2bd8"
+workers_dev = true
+
+[ai]
+binding = "AI"

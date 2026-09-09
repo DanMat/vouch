@@ -1,0 +1,8 @@
+{
+  "name": "vouch",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Grounding Protocol: a code-enforced faithfulness check for AI-generated claims.",
+  "exports": { ".": "./src/core.js", "./record": "./src/record.js" },
+  "license": "MIT"
+}

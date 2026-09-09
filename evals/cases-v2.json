@@ -35,5 +35,9 @@
 
   {"id":"m01","domain":"general","diff":"hard","cat":"paraphrase-refute","claim":"The study found the drug had no effect.","source":"The study reported a statistically significant reduction in symptoms among patients given the drug.","expect":"refuted"},
   {"id":"m02","domain":"general","diff":"hard","cat":"not-in-source","claim":"The study was funded by the manufacturer.","source":"The study reported a statistically significant reduction in symptoms among patients given the drug.","expect":"cannot_determine"},
-  {"id":"m03","domain":"coin","diff":"easy","cat":"clear-support","claim":"CTO stamps never carried mail.","source":"CTO stamps are cancelled to order by the postal authority and never actually carried mail.","expect":"supported"}
+  {"id":"m03","domain":"coin","diff":"easy","cat":"clear-support","claim":"CTO stamps never carried mail.","source":"CTO stamps are cancelled to order by the postal authority and never actually carried mail.","expect":"supported"},
+
+  {"id":"sarc01","domain":"stamp","diff":"trap","cat":"sarcasm","claim":"The stamp is in flawless condition.","source":"Oh sure, the stamp is in flawless condition, if you ignore the tear straight through the middle.","expect":"refuted"},
+  {"id":"sarc02","domain":"coin","diff":"trap","cat":"sarcasm","claim":"The coin has never been cleaned.","source":"Right, and I am sure the dealer's claim that it has never been cleaned is completely trustworthy.","expect":"cannot_determine"},
+  {"id":"sarc03","domain":"coin","diff":"trap","cat":"sarcasm","claim":"The coin is rare.","source":"Another rare coin that every dealer somehow has ten of in the case.","expect":"refuted"}
 ]
